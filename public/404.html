@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AnalystOS</title>
+    <script>
+      // GitHub Pages SPA fallback: redirect to index with path preserved for client router
+      sessionStorage.setItem('analystos-redirect', location.href)
+      var base = location.pathname.split('/').slice(0, 2).join('/')
+      if (!base || base === '/') {
+        location.replace('/index.html')
+      } else {
+        location.replace(base + '/index.html')
+      }
+    </script>
+  </head>
+  <body></body>
+</html>

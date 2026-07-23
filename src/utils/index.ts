@@ -98,13 +98,15 @@ export function parseCsv(text: string): { headers: string[]; rows: string[][] } 
   for (let i = 0; i < text.length; i++) {
     const ch = text[i]
     const next = text[i + 1]
-    if (ch === '"' && inQuotes && next === '"') {
-      current += '"'
-      i++
-      continue
-    }
     if (ch === '"') {
+      // Keep quotes in the line so parseLine can decode cells; only track state for newlines
+      if (inQuotes && next === '"') {
+        current += '""'
+        i++
+        continue
+      }
       inQuotes = !inQuotes
+      current += ch
       continue
     }
     if ((ch === '\n' || ch === '\r') && !inQuotes) {

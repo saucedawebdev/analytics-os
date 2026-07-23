@@ -14,10 +14,7 @@ import { logActivity } from '@/services/data-service'
 export async function seedBuiltInContent(force = false): Promise<void> {
   const version = await getMeta('builtinContentVersion')
   if (!force && version === String(BUILTIN_CONTENT_VERSION)) {
-    // Still ensure personal tables have built-in copies where stored in IDB
-    const kpiCount = await db.kpis.where('isBuiltIn').equals(1).count().catch(async () => {
-      return (await db.kpis.filter((k) => k.isBuiltIn).count())
-    })
+    const kpiCount = await db.kpis.filter((k) => k.isBuiltIn).count()
     if (kpiCount > 0) return
   }
 

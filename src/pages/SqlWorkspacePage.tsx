@@ -54,21 +54,17 @@ export default function SqlWorkspacePage() {
     let active = true
     async function loadSqlJs() {
       try {
-        const module = (await import('sql.js')) as unknown as { default: InitSqlJs }
+        const module = (await import('sql.js/dist/sql-wasm.js')) as unknown as { default: InitSqlJs }
         const initSqlJs = module.default
-        let SQL: SqlStatic
-        try {
-          SQL = await initSqlJs({
-            locateFile: (file) => new URL(`../../node_modules/sql.js/dist/${file}`, import.meta.url).href,
-          })
-        } catch {
-          SQL = await initSqlJs({ locateFile: (file) => `https://sql.js.org/dist/${file}` })
-        }
+        const base = import.meta.env.BASE_URL || '/'
+        const SQL = await initSqlJs({
+          locateFile: (file) => `${base}sqljs/${file}`,
+        })
         if (!active) return
         const nextDb = new SQL.Database()
         setWorkspaceDb(nextDb)
         setLoadStatus('ready')
-        setMessage('Temporary SQLite workspace ready. First load may need network access for sql-wasm.wasm if the local asset is unavailable.')
+        setMessage('Temporary SQLite workspace ready. All execution stays on this device.')
       } catch (error) {
         if (!active) return
         setLoadStatus('error')
@@ -185,8 +181,8 @@ export default function SqlWorkspacePage() {
         <Panel title="sql.js failed to load">
           <p className="page-subtitle">{loadError}</p>
           <p className="list-item-meta">
-            The workspace first tries the local Vite dependency asset and then the sql.js CDN for
-            sql-wasm.wasm. If both are unavailable, saved SQL CRUD still works in the vault.
+            The workspace loads local <span className="mono">sql-wasm.wasm</span> from the app
+            assets. Saved SQL CRUD still works in the vault even if the workspace engine fails.
           </p>
         </Panel>
       ) : null}

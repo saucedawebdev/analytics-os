@@ -32,6 +32,7 @@ import {
 } from '@/pages/pageUtils'
 import { useUiStore } from '@/lib/ui-store'
 import { getRelated, logActivity, trackRecent } from '@/services/data-service'
+import { RelationshipPanel } from '@/components/common/RelationshipPanel'
 
 export default function ProjectDetailPage() {
   const { id = 'new' } = useParams()
@@ -507,6 +508,8 @@ export default function ProjectDetailPage() {
         <Badge>{statusLabel(project.priority)}</Badge>
         <Badge>{statusLabel(project.projectType)}</Badge>
       </div>
+
+      {!isNew ? <RelationshipPanel entity={{ type: 'project', id: project.id }} /> : null}
 
       <ConfirmDialog
         open={archiveOpen}

@@ -73,6 +73,19 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['sql.js'],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('monaco-editor') || id.includes('@monaco-editor')) return 'monaco'
+          if (id.includes('recharts')) return 'recharts'
+          if (id.includes('sql.js')) return 'sqljs'
+          if (id.includes('node_modules')) return 'vendor'
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1200,
+  },
   test: {
     globals: true,
     environment: 'happy-dom',
